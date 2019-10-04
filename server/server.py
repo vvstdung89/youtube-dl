@@ -5,10 +5,15 @@ from flask import Flask, json, request
 from youtube_dl import YoutubeDL
 
 api = Flask(__name__)
-ydl = YoutubeDL({'nocheckcertificate': True, 'youtube_include_dash_manifest': False, 'proxy': "http://localhost:1080"})
+# ydl = YoutubeDL({'nocheckcertificate': True, 'youtube_include_dash_manifest': False, 'proxy': "http://localhost:1080"})
 
 @api.route('/get', methods=['GET'])
 def get_video():
+    start_time = time.time()
+    ydl = YoutubeDL(
+        {'nocheckcertificate': True, 'youtube_include_dash_manifest': False})
+    elapsed_time = time.time() - start_time
+    print(elapsed_time)
     id = request.args.get('id')
     if id == "":
         return ""
