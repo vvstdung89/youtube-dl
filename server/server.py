@@ -4,13 +4,11 @@ from flask import Flask, json, request
 
 from youtube_dl import YoutubeDL
 
-companies = [{"id": 1, "name": "Company One"}, {"id": 2, "name": "Company Two"}]
-
 api = Flask(__name__)
+ydl = YoutubeDL({'nocheckcertificate': True, 'youtube_include_dash_manifest': False, 'proxy': "http://localhost:1080"})
 
 @api.route('/get', methods=['GET'])
-def get_companies():
-    ydl = YoutubeDL({'nocheckcertificate': True, 'youtube_include_dash_manifest': False})
+def get_video():
     id = request.args.get('id')
     if id == "":
         return ""
