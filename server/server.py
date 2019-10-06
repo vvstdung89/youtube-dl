@@ -4,7 +4,7 @@ from flask import Flask, json, request
 
 from youtube_dl import YoutubeDL
 
-YTValids = ["18", "22", "250", "249", "160", "133", "243", "395"]
+YTValids = ["18", "22", "43", "243", "247", "248", "271", "313", "272", "139", "140", "141", "249", "250", "251"]
 
 api = Flask(__name__)
 
@@ -23,26 +23,29 @@ def get_youtube():
     else:
         youtubeConfig = {'nocheckcertificate': True, 'youtube_include_dash_manifest': False, 'proxy': proxy}
 
-
     start_time = time.time()
     ydl = YoutubeDL(youtubeConfig)
     r = ydl.extract_info("https://www.youtube.com/watch?v=" + id, False, "Youtube")
     elapsed_time = time.time() - start_time
     print(elapsed_time)
 
-
-    formats = {}
+    formats = []
     for item in r['formats']:
         itag = item['format_id']
         if itag in YTValids:
-            formats[itag] = item['url']
+            format = {
+                'itag': itag,
+                'url': item['url'],
+                'size': item['filesize'],
+                'ext': item['ext'],
+            }
+            formats.append(format)
 
     return json.dumps({
         'title': r['title'],
         'thumbnail': r['thumbnail'],
         'duration': r['duration'],
         'formats': formats,
-        'is_live': r['is_live']
     })
 
 
