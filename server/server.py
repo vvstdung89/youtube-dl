@@ -2,11 +2,15 @@ import time
 import pika
 import json
 import threading
+
+import os
+import sys
+sys.path.append(os.getcwd())
+
 from youtube_dl import YoutubeDL
 
 YTValids = ["18", "22", "43", "243", "247", "248", "271",
             "313", "272", "139", "140", "141", "249", "250", "251"]
-
 
 def on_request(ch, method, props, body):
 
