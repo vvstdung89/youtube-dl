@@ -22,7 +22,7 @@ def on_request(ch, method, props, body):
                          'youtube_include_dash_manifest': False}
     else:
         youtubeConfig = {'nocheckcertificate': True,
-                         'youtube_include_dash_manifest': False, 'proxy': proxyUrl}
+                         'youtube_include_dash_manifest': False, 'proxy': jsonObj["proxy"]}
 
     start_time = time.time()
     ydl = YoutubeDL(youtubeConfig)
