@@ -1,34 +1,29 @@
 import time
-import os
-import sys
-sys.path.append(os.getcwd())
-
-from flask import Flask, json, request
-
+import pika
+import json
+import threading
 from youtube_dl import YoutubeDL
 
-YTValids = ["18", "22", "43", "243", "247", "248", "271", "313", "272", "139", "140", "141", "249", "250", "251"]
+YTValids = ["18", "22", "43", "243", "247", "248", "271",
+            "313", "272", "139", "140", "141", "249", "250", "251"]
 
-api = Flask(__name__)
 
+def on_request(ch, method, props, body):
 
-@api.route('/youtube', methods=['GET'])
-def get_youtube():
-    id = request.args.get('id')
-    proxy = request.args.get('proxy')
+    jsonObj = json.loads(body)
+    print(jsonObj)
 
-    if id == "":
-        return ""
-
-    if proxy != "":
-        youtubeConfig = {'nocheckcertificate': True, 'youtube_include_dash_manifest': False}
-
+    if "proxy" not in jsonObj:
+        youtubeConfig = {'nocheckcertificate': True,
+                         'youtube_include_dash_manifest': False}
     else:
-        youtubeConfig = {'nocheckcertificate': True, 'youtube_include_dash_manifest': False, 'proxy': proxy}
+        youtubeConfig = {'nocheckcertificate': True,
+                         'youtube_include_dash_manifest': False, 'proxy': proxyUrl}
 
     start_time = time.time()
     ydl = YoutubeDL(youtubeConfig)
-    r = ydl.extract_info("https://www.youtube.com/watch?v=" + id, False, "Youtube")
+    r = ydl.extract_info(
+        "https://www.youtube.com/watch?v=" + jsonObj['id'], False, "Youtube")
     elapsed_time = time.time() - start_time
     print(elapsed_time)
 
@@ -44,13 +39,45 @@ def get_youtube():
             }
             formats.append(format)
 
-    return json.dumps({
+    res = json.dumps({
         'title': r['title'],
         'thumbnail': r['thumbnail'],
         'duration': r['duration'],
         'formats': formats,
     })
+    ch.basic_publish(exchange='',
+                     routing_key=props.reply_to,
+                     properties=pika.BasicProperties(
+                         correlation_id=props.correlation_id),
+                     body=str(res))
+
+    ch.basic_ack(delivery_tag=method.delivery_tag)
+
+
+def run():
+    credentials = pika.PlainCredentials('admin', 'admin')
+    connection = pika.BlockingConnection(pika.ConnectionParameters(
+        host='localhost', port=15672, credentials=credentials))
+    channel = connection.channel()
+    channel.queue_declare(queue='getlink', durable=True)
+
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue='getlink', on_message_callback=on_request)
+    print(" [x] Awaiting RPC requests")
+    channel.start_consuming()
+
+
+def xrange(x):
+    return iter(range(x))
+
+
+def start(max_threads):
+    for i in xrange(max_threads):
+        print(i)
+        t = threading.Thread(target=run)
+        t.start()
+        t.join(0)
 
 
 if __name__ == '__main__':
-    api.run()
+    start(10)
