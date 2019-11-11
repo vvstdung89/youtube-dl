@@ -18,7 +18,6 @@ from .acast import (
     ACastIE,
     ACastChannelIE,
 )
-from .addanime import AddAnimeIE
 from .adn import ADNIE
 from .adobeconnect import AdobeConnectIE
 from .adobetv import (
@@ -254,10 +253,6 @@ from .dailymotion import (
     DailymotionPlaylistIE,
     DailymotionUserIE,
 )
-from .daisuki import (
-    DaisukiMottoIE,
-    DaisukiMottoPlaylistIE,
-)
 from .daum import (
     DaumIE,
     DaumClipIE,
@@ -355,7 +350,6 @@ from .firsttv import FirstTVIE
 from .fivemin import FiveMinIE
 from .fivetv import FiveTVIE
 from .flickr import FlickrIE
-from .flipagram import FlipagramIE
 from .folketinget import FolketingetIE
 from .footyroom import FootyRoomIE
 from .formula1 import Formula1IE
@@ -402,10 +396,6 @@ from .fusion import FusionIE
 from .fxnetworks import FXNetworksIE
 from .gaia import GaiaIE
 from .gameinformer import GameInformerIE
-from .gameone import (
-    GameOneIE,
-    GameOnePlaylistIE,
-)
 from .gamespot import GameSpotIE
 from .gamestar import GameStarIE
 from .gaskrank import GaskrankIE
@@ -460,7 +450,6 @@ from .hungama import (
     HungamaSongIE,
 )
 from .hypem import HypemIE
-from .iconosquare import IconosquareIE
 from .ign import (
     IGNIE,
     OneUPIE,
@@ -519,8 +508,8 @@ from .keezmovies import KeezMoviesIE
 from .ketnet import KetnetIE
 from .khanacademy import KhanAcademyIE
 from .kickstarter import KickStarterIE
+from .kinja import KinjaEmbedIE
 from .kinopoisk import KinoPoiskIE
-from .keek import KeekIE
 from .konserthusetplay import KonserthusetPlayIE
 from .kontrtube import KontrTubeIE
 from .krasview import KrasViewIE
@@ -635,7 +624,6 @@ from .microsoftvirtualacademy import (
     MicrosoftVirtualAcademyIE,
     MicrosoftVirtualAcademyCourseIE,
 )
-from .minhateca import MinhatecaIE
 from .ministrygrid import MinistryGridIE
 from .minoto import MinotoIE
 from .miomio import MioMioIE
@@ -645,7 +633,6 @@ from .mixcloud import (
     MixcloudIE,
     MixcloudUserIE,
     MixcloudPlaylistIE,
-    MixcloudStreamIE,
 )
 from .mlb import MLBIE
 from .mnet import MnetIE
@@ -939,10 +926,6 @@ from .rentv import (
 from .restudy import RestudyIE
 from .reuters import ReutersIE
 from .reverbnation import ReverbNationIE
-from .revision3 import (
-    Revision3EmbedIE,
-    Revision3IE,
-)
 from .rice import RICEIE
 from .rmcdecouverte import RMCDecouverteIE
 from .ro220 import Ro220IE
@@ -987,6 +970,10 @@ from .sbs import SBSIE
 from .screencast import ScreencastIE
 from .screencastomatic import ScreencastOMaticIE
 from .scrippsnetworks import ScrippsNetworksWatchIE
+from .scte import (
+    SCTEIE,
+    SCTECourseIE,
+)
 from .seeker import SeekerIE
 from .senateisvp import SenateISVPIE
 from .sendtonews import SendtoNewsIE
@@ -1244,6 +1231,7 @@ from .twitter import (
     TwitterCardIE,
     TwitterIE,
     TwitterAmplifyIE,
+    TwitterBroadcastIE,
 )
 from .udemy import (
     UdemyIE,
