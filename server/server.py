@@ -2,7 +2,8 @@ import time
 import pika
 import json
 import threading
-
+import urllib.parse as urlparse
+from urllib.parse import parse_qs
 import os
 import sys
 
@@ -43,6 +44,9 @@ def on_request(ch, method, props, body):
                     'size': item['filesize'],
                     'ext': item['ext'],
                 }
+                parsed = urlparse.urlparse(item['url'])
+                if len(parse_qs(parsed.query)['expire']) > 0:
+                    format['expire'] = parse_qs(parsed.query)['expire'][0]
                 formats.append(format)
 
         res = json.dumps({
