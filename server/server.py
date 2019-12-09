@@ -14,6 +14,10 @@ from youtube_dl import YoutubeDL
 YTValids = ["18", "22", "43", "243", "247", "248", "271",
             "313", "272", "139", "140", "141", "249", "250", "251"]
 
+rmq = os.environ.get('rmq')
+if rmq == None:
+    rmq = "localhost"
+print(rmq)
 
 def on_request(ch, method, props, body):
     try:
@@ -84,7 +88,7 @@ def on_request(ch, method, props, body):
 def run():
     credentials = pika.PlainCredentials('admin', 'admin')
     connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost', port=15672, credentials=credentials))
+        host=rmq, port=15672, credentials=credentials))
     channel = connection.channel()
     channel.queue_declare(queue='getlink', durable=True)
 
