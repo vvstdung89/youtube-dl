@@ -19,6 +19,10 @@ if rmq == None:
     rmq = "localhost"
 print(rmq)
 
+clientID = os.environ.get('clientID')
+if clientID == None:
+    clientID = "N/A"
+
 def on_request(ch, method, props, body):
     try:
         jsonObj = json.loads(body)
@@ -68,10 +72,16 @@ def on_request(ch, method, props, body):
                          body=str(res))
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
-    except Exception:
+    except Exception as ex:
+        if 'Error 429: Too Many Requests' in str(ex):
+            print('Error 429: Too Many Requests detect')
+            ch.close()
+            return
+
         res = json.dumps({
             'type': "youtube",
             'id': jsonObj['id'],
+            'clientID': clientID,
             'error': True,
         })
 
@@ -82,8 +92,6 @@ def on_request(ch, method, props, body):
                          body=str(res))
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
-
-
 
 def run():
     credentials = pika.PlainCredentials('admin', 'admin')
@@ -96,6 +104,7 @@ def run():
     channel.basic_consume(queue='getlink', on_message_callback=on_request)
     print(" [x] Awaiting RPC requests")
     channel.start_consuming()
+
 
 
 def xrange(x):
@@ -111,4 +120,4 @@ def start(max_threads):
 
 
 if __name__ == '__main__':
-    start(10)
+    start(5)
